@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 #Custom User Manager
 class UserManager(BaseUserManager):
-    def create_user(self, email, name,  password=None, password2=None):
+    def create_user(self, email, name,is_active=True, is_staff=False, is_admin=False,password=None, password2=None):
         """
         Creates and saves a User with the given email, name, tc and password.
         """
@@ -18,12 +18,27 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             name =  name,
         )
+        user.admin = is_admin
+        user.staff = is_staff
+        user.is_active = is_active
+        
 
         user.set_password(password)
         user.save(using=self._db)
         return user
+    
+    def create_staffuser(self, email, name,  password=None):
+        user = self.create_user(
+            email,
+            password=password,
+            name= name,
+            is_staff=True,
+            is_active=True,
+        )
+        return user
 
-    def create_superuser(self, email, name,  password=None):
+
+    def create_superuser(self, email, name, password=None):
         """
         Creates and saves a superuser with the given email, name, tc and password.
         """
@@ -31,9 +46,10 @@ class UserManager(BaseUserManager):
             email,
             password=password,
             name= name, 
+            is_staff=True,
+            is_admin=True,
+            is_active=True,
         )
-        user.is_admin = True
-        user.save(using=self._db)
         return user
 
 #Custom User Model
@@ -45,7 +61,8 @@ class User(AbstractBaseUser):
     )
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
+    admin = models.BooleanField(default=False)
+    staff = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
     paid_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -62,7 +79,7 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
-        return self.is_admin
+        return True
 
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
@@ -73,7 +90,11 @@ class User(AbstractBaseUser):
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
-        return self.is_admin
+        return self.staff
+    
+    @property
+    def is_admin(self):
+        return self.admin
     
     def is_paid_expired(self):
         if self.is_paid and self.paid_at:
