@@ -29,7 +29,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['.herokuapp.com']
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'user.User'
 
