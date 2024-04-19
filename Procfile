@@ -1,1 +1,1 @@
-web: gunicorn backend.wsgi
+web: gunicorn personovelback.wsgi
