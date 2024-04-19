@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 #Custom User Manager
 class UserManager(BaseUserManager):
-    def create_user(self, email, name,is_active=True, is_staff=False, is_admin=False,password=None, password2=None):
+    def create_user(self, email, name,is_active=False, is_staff=False, is_admin=False,password=None, password2=None):
         """
         Creates and saves a User with the given email, name, tc and password.
         """
@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         user.admin = is_admin
         user.staff = is_staff
         user.is_active = is_active
-        
+
 
         user.set_password(password)
         user.save(using=self._db)
