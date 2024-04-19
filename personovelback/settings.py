@@ -177,17 +177,17 @@ SIMPLE_JWT = {
 PASSWORD_RESET_TIMEOUT = 900 # 900 SEC = 15 MIN
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / "static_my_project",
                     BASE_DIR / "templates" / "build",
                      ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn", "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "static_cdn", "media_root")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static", "media_root")
 
 AWS_ACCESS_KEY_ID = 'AKIAZI2LDWF7QUOKYKP6'
 AWS_SECRET_ACCESS_KEY = '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'
